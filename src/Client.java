@@ -9,11 +9,11 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
+import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Client {
-	
 	private static PublicKey pubKey;
 	private static PrivateKey privKey;
 	
@@ -33,13 +33,22 @@ public class Client {
 		 // receiving from server ( receiveRead  object)
 	     InputStream istream = sock.getInputStream();
 	     BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
-	 
+	     
 	     System.out.println("Start the chitchat, type and press Enter key");
+	     
+	     // Sends Public Key
+	     System.out.println(pubKey);
+	     
+	     //byte[] publicBytes = Base64.getEncoder().encode(pubKey.toString().getBytes());
+	     pwrite.println(pubKey.toString());
+	     // flush the data
+	  	 pwrite.flush();
 	     
 	     String receiveMessage, sendMessage;               
 	     while(true) {
 	    	// keyboard reading
 			sendMessage = keyRead.readLine();
+			
 			// sending to server
 			pwrite.println(sendMessage);
 			// flush the data

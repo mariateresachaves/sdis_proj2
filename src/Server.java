@@ -42,9 +42,9 @@ public class Server {
 			if ((receiveMessage = receiveRead.readLine()) != null)
 				System.out.println("Original received: " + receiveMessage);
 
-			sendMessage = keyRead.readLine();
-			pwrite.println(sendMessage);
-			pwrite.flush();
+			//sendMessage = keyRead.readLine();
+			//pwrite.println(sendMessage);
+			//pwrite.flush();
 		}
 	}
 	
