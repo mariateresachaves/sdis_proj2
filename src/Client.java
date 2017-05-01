@@ -4,9 +4,23 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Client {
+	
+	private static PublicKey pubKey;
+	private static PrivateKey privKey;
+	
 	public static void main(String args[]) throws Exception {
+		// Keys
+		generateKeys();
+		
 		Socket sock = new Socket("localhost", 3000);
 		
 		// reading from keyboard (keyRead object)
@@ -36,5 +50,17 @@ public class Client {
 				// displaying at DOS prompt
 				System.out.println("Original received: " + receiveMessage);
 	     }
+	}
+	
+	private static void generateKeys() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
+		
+		kpg.initialize(1024);
+		
+		KeyPair kp = kpg.generateKeyPair();
+		
+		pubKey = kp.getPublic();
+		privKey = kp.getPrivate();
 	}
 }

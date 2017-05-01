@@ -5,9 +5,22 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Server {
+	private static PublicKey pubKey;
+	private static PrivateKey privKey;
+	
 	public static void main(String[] args) throws Exception {
+		// Keys
+		generateKeys();
+		
 		ServerSocket sersock = new ServerSocket(3000);
 
 		System.out.println("Server ready for chatting");
@@ -33,5 +46,17 @@ public class Server {
 			pwrite.println(sendMessage);
 			pwrite.flush();
 		}
+	}
+	
+	private static void generateKeys() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
+		
+		kpg.initialize(1024);
+		
+		KeyPair kp = kpg.generateKeyPair();
+		
+		pubKey = kp.getPublic();
+		privKey = kp.getPrivate();
 	}
 }
