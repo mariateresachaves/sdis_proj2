@@ -9,7 +9,6 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
-import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -65,9 +64,9 @@ public class Client {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
 		
-		kpg.initialize(1024);
+		kpg.initialize(4096);
 		
-		KeyPair kp = kpg.generateKeyPair();
+		KeyPair kp = kpg.genKeyPair();
 		
 		pubKey = kp.getPublic();
 		privKey = kp.getPrivate();
