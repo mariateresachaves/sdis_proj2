@@ -32,6 +32,7 @@ public class Client_GUI extends JFrame{
 		this.getContentPane().add(new TabbedPanel());
 		this.setVisible(true);
 		this.setTitle("Crypto Chat");
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
