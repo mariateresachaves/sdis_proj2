@@ -22,3 +22,13 @@
 ## Melhorias
 
 * A aplicação poderá suportar mensagens em grupo e transferência de ficheiros
+
+# Como usar a aplicação
+
+Correr o servidor com o seguinte comando:
+
+`java -classpath bcprov-jdk15on-150.jar:. Server`
+
+Depois correr o cliente com o seguinte comando:
+
+`java -classpath bcprov-jdk15on-150.jar:. Client`
