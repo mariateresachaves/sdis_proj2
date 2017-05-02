@@ -32,3 +32,4 @@ Correr o servidor com o seguinte comando:
 Depois correr o cliente com o seguinte comando:
 
 `java -classpath bcprov-jdk15on-150.jar:. Client`
+
