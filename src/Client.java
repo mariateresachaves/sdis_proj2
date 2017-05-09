@@ -16,8 +16,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Client {
 	private static PublicKey pubKey;
 	private static PrivateKey privKey;
-	private static int pubKeyCode = 101;
-	private static int messageCode = 101;
 
 	public static void main(String args[]) throws Exception {
 		if (args.length != 1) {
@@ -31,10 +29,12 @@ public class Client {
 		// Keys
 		generateKeys();
 
-		String keyMessage = String.format("%d-%s-%s", pubKeyCode, Util.getProperties().getProperty("KEY_SIZE"), pubKey);
+		String keyMessage = String.format("%s-%s-%s", Util.getProperties().getProperty("PUBKEY_CODE"),
+				Util.getProperties().getProperty("KEY_SIZE"), pubKey);
 
+		// Just to test the key message
 		System.out.println(keyMessage);
-		
+
 		Socket sock = new Socket("localhost", 3000);
 
 		// reading from keyboard (keyRead object)
@@ -49,9 +49,6 @@ public class Client {
 		BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
 
 		System.out.println("Start the chitchat, type and press Enter key");
-
-		// Sends Public Key
-		System.out.println(pubKey);
 
 		// byte[] publicBytes =
 		// Base64.getEncoder().encode(pubKey.toString().getBytes());

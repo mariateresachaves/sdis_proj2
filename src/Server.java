@@ -16,11 +16,25 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Server {
 	private static PublicKey pubKey;
 	private static PrivateKey privKey;
-	
+
 	public static void main(String[] args) throws Exception {
+		if (args.length != 1) {
+			System.out.println("[?] Usage: Client <PropertiesFile>");
+			System.exit(Util.ErrorCode.ERR_WRONG_ARGS.ordinal());
+		}
+
+		// Load properties file
+		Util.loadPropertiesFile(args[0]);
+
 		// Keys
 		generateKeys();
-		
+
+		String keyMessage = String.format("%s-%s-%s", Util.getProperties().getProperty("PUBKEY_CODE"),
+				Util.getProperties().getProperty("KEY_SIZE"), pubKey);
+
+		// Just to test the key message
+		System.out.println(keyMessage);
+
 		ServerSocket sersock = new ServerSocket(3000);
 
 		System.out.println("Server ready for chatting");
@@ -42,20 +56,20 @@ public class Server {
 			if ((receiveMessage = receiveRead.readLine()) != null)
 				System.out.println("Original received: " + receiveMessage);
 
-			//sendMessage = keyRead.readLine();
-			//pwrite.println(sendMessage);
-			//pwrite.flush();
+			// sendMessage = keyRead.readLine();
+			// pwrite.println(sendMessage);
+			// pwrite.flush();
 		}
 	}
-	
+
 	private static void generateKeys() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
-		
+
 		kpg.initialize(1024);
-		
+
 		KeyPair kp = kpg.generateKeyPair();
-		
+
 		pubKey = kp.getPublic();
 		privKey = kp.getPrivate();
 	}
