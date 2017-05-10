@@ -8,6 +8,7 @@ import javax.swing.*;
 
 public class AboutWindow extends JDialog{
 	public AboutWindow() {
+		this.setTitle("Authors");
 		this.setModal(true);
 		this.setLayout(new GridLayout(3,2));
 		

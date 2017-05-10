@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -19,25 +20,13 @@ public class Client_GUI extends JFrame {
 
 		JMenuBar barramenu = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
-		JMenu aboutMenu = new JMenu("About");
-		aboutMenu.addMenuListener(new MenuListener() {
+		JMenu helpMenu = new JMenu("Help");
+		JMenuItem about = new JMenuItem("About");
+		about.addActionListener(new ActionListener() {
 
-			public void menuSelected(MenuEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {
 				AboutWindow aw = new AboutWindow();
-				aw.setVisible(true);// TODO Auto-generated method stub
-
-			}
-
-			public void menuDeselected(MenuEvent arg0) {
-				// TODO Auto-generated method stub
-				// nao faz nada
-
-			}
-
-			public void menuCanceled(MenuEvent arg0) {
-				// TODO Auto-generated method stub
-				// nao faz nada
-
+				aw.setVisible(true);
 			}
 		});
 
@@ -57,19 +46,57 @@ public class Client_GUI extends JFrame {
 		settings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
 		settings.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent arg0) {
-				SettingsModal sm= new SettingsModal();
+				SettingsModal sm = new SettingsModal();
 				sm.setVisible(true);
-				
+
 			}
 		});
+		helpMenu.add(about);
 
+		JMenuItem cTor = new JMenuItem("Check Tor");
+		cTor.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				boolean recv = torCommunications.TorController.checkTor();
+				if (recv) {
+					JOptionPane.showMessageDialog(null, "You are connected to TOR network",
+							"Succesfull",
+							JOptionPane.INFORMATION_MESSAGE);
+				}else{
+					JOptionPane.showMessageDialog(null, "Something went wrong and you are not longer connected to the Tor network",
+							"ERROR",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+			}
+		});
+		
+		JMenuItem configTor= new JMenuItem("Tor Configuration");
+		configTor.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				TorConfig tconfig;
+				try {
+					tconfig = new TorConfig();
+					tconfig.setVisible(true);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+		});		
+		
+		fileMenu.add(configTor);
+		fileMenu.add(cTor);
 		fileMenu.add(settings);
 		fileMenu.add(quit);
 
 		barramenu.add(fileMenu);
-		barramenu.add(aboutMenu);
+		barramenu.add(helpMenu);
 		this.setJMenuBar(barramenu);
 
 		this.getContentPane().add(new TabbedPanel());
