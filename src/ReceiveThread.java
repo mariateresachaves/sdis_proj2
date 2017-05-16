@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+import Configs.Util;
+
 public class ReceiveThread extends Thread {
 	
 	private static DatagramSocket socket;

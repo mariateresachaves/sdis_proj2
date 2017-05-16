@@ -13,6 +13,8 @@ import java.util.logging.Level;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import Configs.Util;
+
 public class Client {
 	private static PublicKey pubKey;
 	private static PrivateKey privKey;

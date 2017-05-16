@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import javax.swing.BoxLayout;
+import javax.rmi.CORBA.Util;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -15,6 +15,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+
 
 import torCommunications.TorController;
 
@@ -36,7 +38,7 @@ public class TorConfig extends JDialog{
 		north.add(tport);
 		
 
-		String[] data=TorController.readTorConfigFile(new File("/etc/tor/torrc")).toArray(new String[0]);
+		String[] data=TorController.readTorConfigFile(new File(Configs.Util.getProperties().getProperty("TORRC", "/etc/tor/torrc"))).toArray(new String[0]);
 		JList<String> torHiddenS= new JList<String>(data);
 		JScrollPane center= new JScrollPane(torHiddenS);		
 

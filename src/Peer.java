@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import Configs.Util;
+
 public class Peer {
 	private static String name;
 	private static PublicKey pubKey;
