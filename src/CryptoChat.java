@@ -14,7 +14,7 @@ public class CryptoChat {
 
 		System.out.println(tc.isTorRunning());
 		ArrayList<String> abc = tc
-				.readTorConfigFile(new File("/etc/tor/torrc"));
+				.readTorConfigFile(new File(Configs.Util.getProperties().getProperty("TORRC", "/etc/tor/torrc")));
 
 		for (String x : abc) {
 			System.out.println(x);
