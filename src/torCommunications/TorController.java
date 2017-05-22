@@ -3,7 +3,9 @@ package torCommunications;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class TorController {
 
@@ -111,7 +113,7 @@ public class TorController {
 
 	}
 
-	//http://www.xyzws.com/Javafaq/how-to-use-httpurlconnection-post-data-to-web-server/139
+	// http://www.xyzws.com/Javafaq/how-to-use-httpurlconnection-post-data-to-web-server/139
 	public static boolean checkTor() {
 		URL url;
 		HttpURLConnection connection = null;
@@ -142,10 +144,11 @@ public class TorController {
 				response.append('\r');
 			}
 			rd.close();
-			
-			if(response.toString().contains("Congratulations. This browser is configured to use Tor.")){
+
+			if (response.toString().contains(
+					"Congratulations. This browser is configured to use Tor.")) {
 				return true;
-			}else{
+			} else {
 				return false;
 			}
 
@@ -160,6 +163,54 @@ public class TorController {
 				connection.disconnect();
 			}
 		}
+	}
+
+	public String hiddenSocksPort(String filepath) throws IOException {
+		File file = new File(filepath);
+		Pattern pattern = Pattern.compile("^SOCKSPort.*$");
+		String ret = "";
+
+		System.out.println(file.getName());
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		ArrayList<String> contents = new ArrayList<String>();
+
+		while (reader.ready()) {
+			contents.add(reader.readLine());
+		}
+		reader.close();
+
+		for (String x : contents) {
+
+			if (x.toString().matches("^SOCKSPort.*$")) {
+				ret = x.split(" ")[1];
+			}
+		}
+
+		return ret;
+	}
+	
+	public String hiddenSocksAddress(String filepath) throws IOException {
+		File file = new File(filepath);
+		Pattern pattern = Pattern.compile("^ControlPort.*$");
+		String ret = "";
+
+		System.out.println(file.getName());
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		ArrayList<String> contents = new ArrayList<String>();
+
+		while (reader.ready()) {
+			contents.add(reader.readLine());
+		}
+		reader.close();
+
+		for (String x : contents) {
+
+			if (x.toString().matches("^ControlPort.*$")) {
+				ret = x.split(" ")[1];
+			}
+		}
+
+		return ret;
 	}
 
 }
