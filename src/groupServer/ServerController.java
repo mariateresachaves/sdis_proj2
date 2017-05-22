@@ -13,6 +13,9 @@ import java.util.Map.Entry;
 
 import org.bouncycastle.openpgp.PGPException;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import BouncyCastle.BCPGPDecryptor;
 import BouncyCastle.BCPGPEncryptor;
 
@@ -20,10 +23,8 @@ public class ServerController {
 
 	private static ServerController svc = null;
 
-	private static String hostnameServerID = Configs.Util.getProperties()
-			.getProperty("HS_ID");
-	private static String pwd = Configs.Util.getProperties().getProperty(
-			"HS_PW");
+	private static String hostnameServerID = Configs.Util.getProperties().getProperty("HS_ID");
+	private static String pwd = Configs.Util.getProperties().getProperty("HS_PW");
 	private static String privateKeyFileLocation;
 
 	// HashMap String->MessagesOnStack
@@ -37,24 +38,64 @@ public class ServerController {
 	}
 
 	private ServerController() throws IOException {
-		ServerController.privateKeyFileLocation = "bin/keys/Private/nmjopc4w7u4a5kse.onion-public.key";
+		ServerController.privateKeyFileLocation = "bin/keys/Private/nmjopc4w7u4a5kse.onion-private.key";
 	}
 
-	public void startServer() throws IOException {
+	public void startServer() throws IOException, Base64DecodingException {
 
 		int portNumber = 8080;
-
+		ServerSocket serverSocket =null;
+		try {
+			serverSocket = new ServerSocket(portNumber);
+		} catch (IOException ex) {
+			System.out.println("Can't setup server on this port number. ");
+		}
+		
 		while (true) {
-			try (ServerSocket serverSocket = new ServerSocket(portNumber);
-					Socket clientSocket = serverSocket.accept();
-					PrintWriter out = new PrintWriter(
-							clientSocket.getOutputStream(), true);
-					BufferedReader in = new BufferedReader(
-							new InputStreamReader(clientSocket.getInputStream()));) {
-				// What to do
-				String msg = in.readLine();
+			try {
+				
 
-				msg = decrypt(msg);
+				Socket socket = null;
+				InputStream in = null;
+				OutputStream out = null;
+				File f = File.createTempFile("RecvE", ".txt");
+
+				try {
+					socket = serverSocket.accept();
+				} catch (IOException ex) {
+					System.out.println("Can't accept client connection. ");
+				}
+
+				try {
+					in = socket.getInputStream();
+				} catch (IOException ex) {
+					System.out.println("Can't get socket input stream. ");
+				}
+
+				try {
+					out = new FileOutputStream(f);
+				} catch (FileNotFoundException ex) {
+					System.out.println("File not found. ");
+				}
+
+				byte[] bytes = new byte[16 * 1024];
+
+				int count;
+				while ((count = in.read(bytes)) > 0) {
+					out.write(bytes, 0, count);
+				}
+
+				// What to do
+				// String msg = in.readLine();
+				// String buff="";
+				// while((buff=in.readLine())!=null){
+				// msg+=buff;
+				// }
+
+				// msg= new String(Base64.decode(msg));
+				String msg = decryptFile(f.getAbsolutePath());
+
+				System.out.println(msg);
 
 				if (isJoinning(msg)) {
 					joinToGroup(msg);
@@ -72,15 +113,62 @@ public class ServerController {
 					justLeave(msg);
 				}
 
-				clientSocket.close();
+				out.close();
+				in.close();
+				socket.close();
+				//serverSocket.close();
+				
+				
 				// End of what to do
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Something bad happen, check logs");
 			}
 		}
 	}
 
+	private String decryptFile(String path) {
+		BCPGPDecryptor dec = new BCPGPDecryptor();
+		dec.setPassword("");
+		File tempf = null;
+
+		try {
+			// Public Key of the server
+			dec.setPrivateKeyFilePath(privateKeyFileLocation);
+
+			tempf = File.createTempFile("msgSU", ".txt");
+			System.out.println(tempf.getAbsolutePath());
+			dec.decryptFile(new File(path), tempf);
+
+		} catch (PGPException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (tempf != null) {
+			Path path1 = Paths.get(tempf.getAbsolutePath());
+			byte[] data = null;
+			try {
+				data = Files.readAllBytes(path1);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String encrypt = new String(data);
+			return encrypt;
+		}
+		return null;
+
+	}
+
 	private String decrypt(String msg) {
 		BCPGPDecryptor dec = new BCPGPDecryptor();
+		dec.setPassword("");
 		File tempf = null;
+
 		try {
 			// Public Key of the server
 			dec.setPrivateKeyFilePath(privateKeyFileLocation);
@@ -90,6 +178,8 @@ public class ServerController {
 			Formatter f = new Formatter(temp);
 			f.format("%s", msg);
 			f.close();
+
+			temp = new File(temp.getPath());
 
 			tempf = File.createTempFile("msgSU", ".txt");
 			System.out.println(tempf.getAbsolutePath());
@@ -150,10 +240,9 @@ public class ServerController {
 					retMsg += x;
 				}
 
-				
-				retMsg=encryptMsg(retMsg,locationID);
+				retMsg = encryptMsg(retMsg, locationID);
 				// TODO: SEND MESSAGE to locationID!
-				
+
 				return;
 			}
 
@@ -161,13 +250,13 @@ public class ServerController {
 
 	}
 
-	private String encryptMsg(String req,String destination) throws FileNotFoundException {
+	private String encryptMsg(String req, String destination) throws FileNotFoundException {
 
 		BCPGPEncryptor enc = new BCPGPEncryptor();
 		File tempf = null;
 		try {
 			// Public Key of the server
-			enc.setPublicKeyFilePath("bin/keys/Public/"+destination+"-public.key");
+			enc.setPublicKeyFilePath("bin/keys/Public/" + destination + "-public.key");
 
 			// Create Temporary File
 			File temp = File.createTempFile("msgU", ".txt");
