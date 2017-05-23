@@ -5,10 +5,11 @@ import javax.swing.*;
 
 public class DirectConnectionsPanel extends JSplitPane {
 
-	private PeerListPanel pl= new PeerListPanel();
+	public static PeerListPanel pl= new PeerListPanel();
+	public static ComsPanel cp= new ComsPanel();
 	
 	public DirectConnectionsPanel() {
-		super(JSplitPane.HORIZONTAL_SPLIT, null, new ComsPanel());
+		super(JSplitPane.HORIZONTAL_SPLIT, null,cp);
 		this.setLeftComponent(pl);
 		
 		

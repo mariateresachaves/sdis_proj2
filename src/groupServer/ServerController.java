@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.ListModel;
+
 import org.bouncycastle.openpgp.PGPException;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -18,8 +20,10 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import BouncyCastle.BCPGPDecryptor;
 import BouncyCastle.BCPGPEncryptor;
+import GUI.DirectConnectionsPanel;
+import GUI.PeerListPanel;
 
-public class ServerController {
+public class ServerController implements Runnable{
 
 	private static ServerController svc = null;
 
@@ -41,19 +45,18 @@ public class ServerController {
 		ServerController.privateKeyFileLocation = "bin/keys/Private/nmjopc4w7u4a5kse.onion-private.key";
 	}
 
-	public void startServer() throws IOException, Base64DecodingException {
+	public void run(){
 
 		int portNumber = 8080;
-		ServerSocket serverSocket =null;
+		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(portNumber);
 		} catch (IOException ex) {
 			System.out.println("Can't setup server on this port number. ");
 		}
-		
+
 		while (true) {
 			try {
-				
 
 				Socket socket = null;
 				InputStream in = null;
@@ -102,6 +105,7 @@ public class ServerController {
 				}
 
 				if (isSendingMessage(msg)) {
+					// Replicate to Self
 					replicateMessage(msg);
 				}
 
@@ -116,9 +120,8 @@ public class ServerController {
 				out.close();
 				in.close();
 				socket.close();
-				//serverSocket.close();
-				
-				
+				// serverSocket.close();
+
 				// End of what to do
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -211,19 +214,38 @@ public class ServerController {
 
 	private void replicateMessage(String msg) {
 		String locationID = msg.split(":")[0];
-
-		for (Entry<String, ArrayList<String>> entry : clients.entrySet()) {
-			String key = entry.getKey();
-
-			if (!key.equalsIgnoreCase(locationID)) {
-
-				entry.getValue().add(msg.split(":")[2]);
-
-				return;
-			}
-
+		String mensagem = msg.split(":")[2];
+		
+		for (Map.Entry<String, ArrayList<String>> entry : DirectConnectionsPanel.pl.conversas.entrySet()) {
+		    String key = entry.getKey();
+		    ArrayList<String> value = entry.getValue();
+		    if(key.equalsIgnoreCase(locationID)){
+		    	value.add(mensagem);
+		    	DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
+				
+		    	return;
+		    }
 		}
+		ArrayList<String> novalista= new ArrayList<>();
+		novalista.add(mensagem);
+		DirectConnectionsPanel.pl.conversas.put(locationID, novalista);
+		DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
+		return;
+		
+		
 
+		/*
+		 * for (Entry<String, ArrayList<String>> entry : clients.entrySet()) {
+		 * String key = entry.getKey();
+		 * 
+		 * if (!key.equalsIgnoreCase(locationID)) {
+		 * 
+		 * entry.getValue().add(msg.split(":")[2]);
+		 * 
+		 * return; }
+		 * 
+		 * }
+		 */
 	}
 
 	private void retriveMessages(String msg) throws FileNotFoundException {
