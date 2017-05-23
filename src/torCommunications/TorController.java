@@ -11,7 +11,7 @@ public class TorController {
 
 	public TorController() {
 		System.setProperty("socksProxyHost", "127.0.0.1");
-		System.setProperty("socksProxyPort", "9550");
+		System.setProperty("socksProxyPort", "9050");
 
 	}
 
