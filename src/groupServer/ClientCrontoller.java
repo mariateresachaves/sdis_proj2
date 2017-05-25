@@ -1,6 +1,8 @@
 package groupServer;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,7 +34,7 @@ public class ClientCrontoller {
 	private static String pathtoServerPubKey;
 
 	private ClientCrontoller() {
-		ClientCrontoller.pathtoServerPubKey="bin/keys/Public/nmjopc4w7u4a5kse.onion-public.key";
+		ClientCrontoller.pathtoServerPubKey = "bin/keys/Public/ltqibw3wnfrjwmmm.onion-public.key";
 	}
 
 	public static ClientCrontoller getInstance() {
@@ -44,48 +46,43 @@ public class ClientCrontoller {
 		String locationID = Configs.Util.getProperties().getProperty("HS_ID");
 
 		String req = String.format("%s:JOIN:%s", locationID, pwd);
-		String fileE ="";
+		String fileE = "";
 		try {
-			fileE= encryptMsg(req);
-			
+			fileE = encryptMsg(req);
+
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		try {
-		// 4 test
-		Socket kkSocket = new Socket(serverID, 80);
-				
-		/*PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),true);
-		BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
+			// 4 test
+			Socket kkSocket = new Socket(serverID, 80);
+
+			File file = new File(fileE);
+			// Get the size of the file
+			long length = file.length();
+			byte[] bytes = new byte[16 * 1024];
+			InputStream in = new FileInputStream(file);
+			OutputStream out = kkSocket.getOutputStream();
+			InputStream abc = kkSocket.getInputStream();
+
+			int count;
+			while ((count = in.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
 
 			
-			out.write(b);
 
+			in.close();
 			out.flush();
-*/
-				File file = new File(fileE);
-		        // Get the size of the file
-		        long length = file.length();
-		        byte[] bytes = new byte[16 * 1024];
-		        InputStream in = new FileInputStream(file);
-		        OutputStream out = kkSocket.getOutputStream();
-
-		        int count;
-		        while ((count = in.read(bytes)) > 0) {
-		            out.write(bytes, 0, count);
-		        }
-
-		        out.close();
-		        in.close();
-		        kkSocket.close();
+			out.close();
+			kkSocket.close();
 			// TODO:CHECK IF OK
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
-				
 		return false;
 	}
 
@@ -115,48 +112,38 @@ public class ClientCrontoller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-/*
-		if (tempf != null) {
-			Path path = Paths.get(tempf.getAbsolutePath());
-			byte[] data = null;
-			try {
-				data = Files.readAllBytes(path);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	*/		
-			return null;
-		
+
+		return null;
+
 	}
 
-	public String getMessages() throws FileNotFoundException {
-		String locationID = Configs.Util.getProperties().getProperty("HS_ID",
-				"BAJORAS");
+	public String getMessages(String target) throws FileNotFoundException {
+		String locationID = Configs.Util.getProperties().getProperty("HS_ID");
 
 		String req = String.format("%s:RQSTMSG", locationID);
-		req=encryptMsg(req);
+		String fileE = encryptMsg(req);
+
 		String res = "";
-		try (
-		// 4 test
-		Socket kkSocket = new Socket("ltqibw3wnfrjwmmm.onion", 80);
-				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
-						true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						kkSocket.getInputStream()));) {
+		try {
+			// 4 test
+			Socket kkSocket = new Socket(target, 80);
 
-			out.write(req);
-			out.flush();
+			File file = new File(fileE);
+			// Get the size of the file
+			long length = file.length();
+			byte[] bytes = new byte[16 * 1024];
+			InputStream in = new FileInputStream(file);
+			OutputStream out = kkSocket.getOutputStream();
 
-			res = in.readLine();
-			System.out.println("Respnse");
+			int count;
+			while ((count = in.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
 
-			System.out.println("Socket Closed");
-			System.out.println(res);
-
+			out.close();
+			in.close();
 			kkSocket.close();
-			
-			return res;
+			// TODO:CHECK IF OK
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -165,25 +152,32 @@ public class ClientCrontoller {
 
 	}
 
-	public boolean leaveServer(String serverID) throws FileNotFoundException {
+	public boolean leaveServer(String target) throws FileNotFoundException {
 
-		String locationID = Configs.Util.getProperties().getProperty("HS_ID",
-				"BAJORAS");
+		String locationID = Configs.Util.getProperties().getProperty("HS_ID");
 
 		String req = String.format("%s:LEAVE", locationID);
-		req=encryptMsg(req);
-		try (
-		// 4 test
-		Socket kkSocket = new Socket("ltqibw3wnfrjwmmm.onion", 80);
-				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
-						true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						kkSocket.getInputStream()));) {
+		String fileE = encryptMsg(req);
+		try {
+			// 4 test
+			Socket kkSocket = new Socket(target, 80);
 
-			out.write(req);
-			out.flush();
+			File file = new File(fileE);
+			// Get the size of the file
+			long length = file.length();
+			byte[] bytes = new byte[16 * 1024];
+			InputStream in = new FileInputStream(file);
+			OutputStream out = kkSocket.getOutputStream();
+
+			int count;
+			while ((count = in.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
+
+			out.close();
+			in.close();
 			kkSocket.close();
-			return true;
+			// TODO:CHECK IF OK
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -191,25 +185,34 @@ public class ClientCrontoller {
 		return false;
 	}
 
-	public boolean sendMessage(String serverID, String message) throws FileNotFoundException {
+	public boolean sendMessage(String target, String message)
+			throws FileNotFoundException {
 
 		String locationID = Configs.Util.getProperties().getProperty("HS_ID",
 				"BAJORAS");
 
 		String req = String.format("%s:SNDMSG:%s", locationID, message);
-		req=encryptMsg(req);
-		try (
-		// 4 test
-		Socket kkSocket = new Socket("ltqibw3wnfrjwmmm.onion", 80);
-				PrintWriter out = new PrintWriter(kkSocket.getOutputStream(),
-						true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						kkSocket.getInputStream()));) {
+		String fileE = encryptMsg(req);
+		try {
+			// 4 test
+			Socket kkSocket = new Socket(target, 80);
 
-			out.write(req);
-			out.flush();
+			File file = new File(fileE);
+			// Get the size of the file
+			long length = file.length();
+			byte[] bytes = new byte[16 * 1024];
+			InputStream in = new FileInputStream(file);
+			OutputStream out = kkSocket.getOutputStream();
+
+			int count;
+			while ((count = in.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
+
+			out.close();
+			in.close();
 			kkSocket.close();
-			return true;
+			// TODO:CHECK IF OK
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
