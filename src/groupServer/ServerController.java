@@ -42,9 +42,10 @@ public class ServerController implements Runnable{
 	}
 
 	private ServerController() throws IOException {
-		ServerController.privateKeyFileLocation = "bin/keys/Private/nmjopc4w7u4a5kse.onion-private.key";
-	}
 
+		ServerController.privateKeyFileLocation = "bin/keys/Private/"+hostnameServerID +"-private.key";
+
+	}
 	public void run(){
 
 		int portNumber = 8080;
@@ -96,6 +97,7 @@ public class ServerController implements Runnable{
 				// }
 
 				// msg= new String(Base64.decode(msg));
+				System.out.println(f.toPath());
 				String msg = decryptFile(f.getAbsolutePath());
 
 				System.out.println(msg);
