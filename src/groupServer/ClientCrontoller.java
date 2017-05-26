@@ -48,7 +48,7 @@ public class ClientCrontoller {
 		String req = String.format("%s:JOIN:%s", locationID, pwd);
 		String fileE = "";
 		try {
-			fileE = encryptMsg(req);
+			fileE = encryptMsg(req,"nope");
 
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -86,13 +86,16 @@ public class ClientCrontoller {
 		return false;
 	}
 
-	private String encryptMsg(String req) throws FileNotFoundException {
+	private String encryptMsg(String req,String destino) throws FileNotFoundException {
 
 		BCPGPEncryptor enc = new BCPGPEncryptor();
 		File tempf = null;
 		try {
 			// Public Key of the server
-			enc.setPublicKeyFilePath(pathtoServerPubKey);
+			//Remote PubKey
+			String keypth="bin/keys/Public/"+destino+"-public.key";
+			System.out.println("Encrypting using ->"+keypth);
+			enc.setPublicKeyFilePath(keypth);
 
 			// Create Temporary File
 			File temp = File.createTempFile("msgU", ".txt");
@@ -121,7 +124,7 @@ public class ClientCrontoller {
 		String locationID = Configs.Util.getProperties().getProperty("HS_ID");
 
 		String req = String.format("%s:RQSTMSG", locationID);
-		String fileE = encryptMsg(req);
+		String fileE = encryptMsg(req,target);
 
 		String res = "";
 		try {
@@ -157,7 +160,7 @@ public class ClientCrontoller {
 		String locationID = Configs.Util.getProperties().getProperty("HS_ID");
 
 		String req = String.format("%s:LEAVE", locationID);
-		String fileE = encryptMsg(req);
+		String fileE = encryptMsg(req,target);
 		try {
 			// 4 test
 			Socket kkSocket = new Socket(target, 80);
@@ -192,7 +195,7 @@ public class ClientCrontoller {
 				"BAJORAS");
 
 		String req = String.format("%s:SNDMSG:%s", locationID, message);
-		String fileE = encryptMsg(req);
+		String fileE = encryptMsg(req,target);
 		try {
 			// 4 test
 			Socket kkSocket = new Socket(target, 80);
