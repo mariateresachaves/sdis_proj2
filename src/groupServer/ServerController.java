@@ -139,6 +139,7 @@ public class ServerController implements Runnable{
 
 		try {
 			// Public Key of the server
+			System.out.println("Decrypt using "+privateKeyFileLocation);
 			dec.setPrivateKeyFilePath(privateKeyFileLocation);
 
 			tempf = File.createTempFile("msgSU", ".txt");
