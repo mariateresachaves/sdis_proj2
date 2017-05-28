@@ -21,8 +21,6 @@ import java.util.Scanner;
 import org.bouncycastle.bcpg.*;
 import org.bouncycastle.openpgp.PGPException;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-
 import BouncyCastle.BCPGPDecryptor;
 import BouncyCastle.BCPGPEncryptor;
 

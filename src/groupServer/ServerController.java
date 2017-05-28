@@ -15,9 +15,6 @@ import javax.swing.ListModel;
 
 import org.bouncycastle.openpgp.PGPException;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-
 import BouncyCastle.BCPGPDecryptor;
 import BouncyCastle.BCPGPEncryptor;
 import GUI.DirectConnectionsPanel;
