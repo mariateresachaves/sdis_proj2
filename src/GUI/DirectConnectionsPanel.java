@@ -28,8 +28,11 @@ public class DirectConnectionsPanel extends JSplitPane {
 					ArrayList<String> novalista= new ArrayList<>();
 					novalista.add("");
 					//Onion Bro, My hero
-					DirectConnectionsPanel.pl.conversas.put(onionName, novalista);
-					DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
+					synchronized (DirectConnectionsPanel.pl) {
+						DirectConnectionsPanel.pl.conversas.put(onionName, novalista);
+						DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
+					}
+					
 				}
 			}
 		});

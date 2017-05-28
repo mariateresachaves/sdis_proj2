@@ -72,6 +72,7 @@ public class ComsPanel extends JPanel{
 				String ind=(String)DirectConnectionsPanel.pl.getSelectedValue();
 				System.out.println("Debug TO->"+DirectConnectionsPanel.pl.getSelectedValue().toString());
 				try {
+					synchronized (DirectConnectionsPanel.pl) {
 					ClientCrontoller.getInstance().sendMessage(DirectConnectionsPanel.pl.getSelectedValue().toString(), areaDeConversa.getText());
 					
 					for (Map.Entry<String, ArrayList<String>> entry : DirectConnectionsPanel.pl.conversas.entrySet()) {
@@ -81,6 +82,7 @@ public class ComsPanel extends JPanel{
 					    	for(String x:value){
 					    		conv+=">"+x+"\n";
 					    	}
+					    	conv+=ComsPanel.this.areaDeConversa.getText();
 					    	
 							
 					    	
@@ -89,7 +91,7 @@ public class ComsPanel extends JPanel{
 					
 					DirectConnectionsPanel.cp.conversa.setText(conv);
 					
-					
+					}
 					
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block

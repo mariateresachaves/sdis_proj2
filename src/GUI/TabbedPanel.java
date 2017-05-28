@@ -10,8 +10,8 @@ public class TabbedPanel extends JTabbedPane {
 	
 	public TabbedPanel() {
 		this.addTab("DC", new DirectConnectionsPanel());
-		this.addTab("Group", new GroupsPanel());
-		this.addTab("Server Settings", new ServerPanel());
+		//this.addTab("Group", new GroupsPanel());
+		//this.addTab("Server Settings", new ServerPanel());
 		
 		
 		this.setVisible(true);

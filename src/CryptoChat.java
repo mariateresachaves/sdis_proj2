@@ -21,8 +21,9 @@ public class CryptoChat {
 		System.out.println(Configs.Util.getProperties().getProperty("HS_ID"));
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-		//ClientCrontoller.getInstance().sendMessage("ltqibw3wnfrjwmmm.onion","SENT");
-		//ServerController.getController().run();
+		ClientCrontoller.getInstance().sendMessage("hsjeo3sy5ifw4aiq.onion","SENT");
+		Thread t = new Thread(ServerController.getController());
+		t.start();
 
 		new Client_GUI();
 

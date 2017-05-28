@@ -23,12 +23,14 @@ import BouncyCastle.BCPGPEncryptor;
 import GUI.DirectConnectionsPanel;
 import GUI.PeerListPanel;
 
-public class ServerController implements Runnable{
+public class ServerController implements Runnable {
 
 	private static ServerController svc = null;
 
-	private static String hostnameServerID = Configs.Util.getProperties().getProperty("HS_ID");
-	private static String pwd = Configs.Util.getProperties().getProperty("HS_PW");
+	private static String hostnameServerID = Configs.Util.getProperties()
+			.getProperty("HS_ID");
+	private static String pwd = Configs.Util.getProperties().getProperty(
+			"HS_PW");
 	private static String privateKeyFileLocation;
 
 	// HashMap String->MessagesOnStack
@@ -43,10 +45,12 @@ public class ServerController implements Runnable{
 
 	private ServerController() throws IOException {
 
-		ServerController.privateKeyFileLocation = "bin/keys/Private/"+hostnameServerID +"-private.key";
+		ServerController.privateKeyFileLocation = "bin/keys/Private/"
+				+ hostnameServerID + "-private.key";
 
 	}
-	public void run(){
+
+	public void run() {
 
 		int portNumber = 8080;
 		ServerSocket serverSocket = null;
@@ -139,7 +143,7 @@ public class ServerController implements Runnable{
 
 		try {
 			// Public Key of the server
-			System.out.println("Decrypt using "+privateKeyFileLocation);
+			System.out.println("Decrypt using " + privateKeyFileLocation);
 			dec.setPrivateKeyFilePath(privateKeyFileLocation);
 
 			tempf = File.createTempFile("msgSU", ".txt");
@@ -218,24 +222,28 @@ public class ServerController implements Runnable{
 	private void replicateMessage(String msg) {
 		String locationID = msg.split(":")[0];
 		String mensagem = msg.split(":")[2];
-		
-		for (Map.Entry<String, ArrayList<String>> entry : DirectConnectionsPanel.pl.conversas.entrySet()) {
-		    String key = entry.getKey();
-		    ArrayList<String> value = entry.getValue();
-		    if(key.equalsIgnoreCase(locationID)){
-		    	value.add(mensagem);
-		    	DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
-				
-		    	return;
-		    }
+		synchronized (DirectConnectionsPanel.pl) {
+			for (Map.Entry<String, ArrayList<String>> entry : DirectConnectionsPanel.pl.conversas
+					.entrySet()) {
+				String key = entry.getKey();
+				ArrayList<String> value = entry.getValue();
+				if (key.equalsIgnoreCase(locationID)) {
+					value.add(mensagem);
+					DirectConnectionsPanel.pl
+							.setListData(DirectConnectionsPanel.pl.conversas
+									.keySet().toArray());
+
+					return;
+				}
+			}
 		}
-		ArrayList<String> novalista= new ArrayList<>();
+		ArrayList<String> novalista = new ArrayList<>();
 		novalista.add(mensagem);
 		DirectConnectionsPanel.pl.conversas.put(locationID, novalista);
-		DirectConnectionsPanel.pl.setListData(DirectConnectionsPanel.pl.conversas.keySet().toArray());
+		DirectConnectionsPanel.pl
+				.setListData(DirectConnectionsPanel.pl.conversas.keySet()
+						.toArray());
 		return;
-		
-		
 
 		/*
 		 * for (Entry<String, ArrayList<String>> entry : clients.entrySet()) {
@@ -275,13 +283,15 @@ public class ServerController implements Runnable{
 
 	}
 
-	private String encryptMsg(String req, String destination) throws FileNotFoundException {
+	private String encryptMsg(String req, String destination)
+			throws FileNotFoundException {
 
 		BCPGPEncryptor enc = new BCPGPEncryptor();
 		File tempf = null;
 		try {
 			// Public Key of the server
-			enc.setPublicKeyFilePath("bin/keys/Public/" + destination + "-public.key");
+			enc.setPublicKeyFilePath("bin/keys/Public/" + destination
+					+ "-public.key");
 
 			// Create Temporary File
 			File temp = File.createTempFile("msgU", ".txt");
