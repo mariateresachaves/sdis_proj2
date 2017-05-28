@@ -12,7 +12,7 @@ echo "Exemplo: bash initTorHS /etc/tor/torrc /home/utilizador/hs/ 9550"
 
 # criar uma pasta para onde vao as chaves
 rm -rf $HIDDENSERVICEFOLDER
-mkdir $HIDDENSERVICEFOLDER
+mkdir -p $HIDDENSERVICEFOLDER
 # ir a pasta onde estao as chaves e alterar as permissoes
 sudo su -c "chmod 777 $HIDDENSERVICEFOLDER"
 
@@ -52,6 +52,7 @@ gpg --export-secret-key  -a "sdis2017" > ../bin/keys/Private/$HOSTNAME_ADDRESS.o
 
 cd ../
 
+ant
 ant CryptoChat
 
 exit 0
