@@ -17,7 +17,7 @@
 
 ## Serviço web
 
-* A aplicação deverá ser capaz de comunicar com outra do mesmo tipo através da rede TCP/IP conhecida.
+* A aplicação deverá ser capaz de comunicar com outra do mesmo tipo através da rede Tor usando TCP/IP conhecida.
 
 ## Melhorias
 
@@ -25,11 +25,8 @@
 
 # Como usar a aplicação
 
-Correr o servidor com o seguinte comando:
+Correr os seguintes comandos:
 
-`java -classpath bcprov-jdk15on-150.jar:. Server`
+`cd scripts/`
 
-Depois correr o cliente com o seguinte comando:
-
-`java -classpath bcprov-jdk15on-150.jar:. Client`
-
+`sudo bash initTorHS.bash /etc/tor/torrc <destination folder for hidden service> 9550`
